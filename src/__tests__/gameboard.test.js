@@ -47,7 +47,7 @@ describe ('Tests for Receive/Miss attack', () => {
     });
     test ('Miss tracking', () => {
         gameboard.receiveAttack([4,1]);
-        expect(gameboard.missed).toContain("1,4");
+        expect(gameboard.missed).toContain("4,1");
     });
 });
 
@@ -80,6 +80,28 @@ describe ('Sunk report', () => {
         gameboard.receiveAttack([4,6]);
 
         expect(gameboard.areAllSunk()).toBe(true);
+    });
+});
+
+describe ('Tests for placement gap', () => {
+    let ship;
+    let ship2;
+    let gameboard;
+
+    beforeEach(() => {
+        gameboard = new Gameboard();
+        ship = new Ship(3);
+        ship2 = new Ship(3);
+        gameboard.placeShip(ship, [1,1], 'horizontal');
+    });
+
+    test ('Ship placement on top of another ship', () => {
+        gameboard.placeShip(ship2, [2,1], 'horizontal');
+        expect(gameboard.hasShipAt([4,1])).toBe(false);
+    });
+    test ('Ship placement close to another ship', () => {
+        gameboard.placeShip(ship2, [2,2], 'vertical');
+        expect(gameboard.hasShipAt([2,3])).toBe(false);
     });
 });
 

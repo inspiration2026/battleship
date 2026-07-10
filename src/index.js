@@ -1,5 +1,5 @@
 console.log ("start!");
 
-export function sum(a, b) {
-  return a + b;
-}
+import { Controller } from "./appController";
+
+const constroller = new Controller();

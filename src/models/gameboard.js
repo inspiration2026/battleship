@@ -4,28 +4,31 @@ export class Gameboard {
     constructor () {
         this.board = Array(10).fill().map(() => Array(10).fill(null));
         this.ships = [];
-        this.missed = new Set;
-        this.hits = new Set;
+        this.missed = new Set();
+        this.hits = new Set();
+        this.blockedSectors = new Set();
     }
 
     placeShip (ship, head, direction) {
+        const x = head[0];
+        const y = head[1];
     // Checks
-        if (head[0] <0 || head[0] >9 || head[1] <0 || head[1] >9) return;
+        if (x <0 || x >9 || y <0 || y >9) return;
         let error = false;
 
-        if ((direction === "horizontal" && head[0]+ship.size >9) ||
-         ((direction === "vertical") && head[1]+ship.size >9)) {
+        if ((direction === "horizontal" && x+ship.size >9) ||
+         ((direction === "vertical") && y+ship.size >9)) {
             return;
         if (direction === "horizontal")  {
             for (let i = 0; i<ship.size; i++) {
-                if (this.board[head[1]][head[0]+i] !== null) {
+                if (this.board[x+i][y] !== null) {
                     error = true;
                     break;
                 }
             }
             } else if (direction === "vertical") {
                 for(let i = 0; i<ship.size; i++) {
-                    if (this.board[head[1]+i][head[0]] !== null) {
+                    if (this.board[x][y+i] !== null) {
                         error = true;
                         break;
                     }
@@ -33,41 +36,67 @@ export class Gameboard {
             };
         };
 
+        if (direction === "horizontal") {
+            for (let i = 0; i<ship.size; i++) {
+                if (this.blockedSectors.has(`${x+i},${y}`)) {
+                    error = true;
+                    break;
+                }
+            }
+        } else if (direction === "vertical") {
+            for(let i = 0; i<ship.size; i++) {
+                if (this.blockedSectors.has(`${x},${y+i}`)) {
+                        error = true;
+                        break;
+                    }
+            }
+        }
+
+
         if (error) return;
 
     // Placement of the ship
         for(let i = 0; i<ship.size; i++) {
             if (direction === "horizontal") {
-                this.board[head[1]][head[0]+i] = ship;
+                this.board[x+i][y] = ship;
+                this.addBlockSectors([x+i,y])
             }
             if (direction === "vertical") {
-                this.board[head[1]+i][head[0]] = ship;
+                this.board[x][y+i] = ship;
+                this.addBlockSectors([x,y+i])
             }
         }
 
         this.ships.push(ship);
+
     
     }
 
     hasShipAt (coordinates) {
-        if (this.board[coordinates[1]][coordinates[0]] !== null) {
+        const x = coordinates[0];
+        const y = coordinates[1];
+
+        if (this.board[x][y] !== null) {
             return true
         } else return false;
         
     }
 
     receiveAttack (coordinates) {
-        if (this.board[coordinates[1]][coordinates[0]] === null) {
-            this.missed.add(`${coordinates[1]},${coordinates[0]}`);
+        const x = coordinates[0];
+        const y = coordinates[1];
+
+        if (this.board[x][y] === null) {
+            this.missed.add(`${x},${y}`);
             return;
         } else {
-            if (this.hits.has(`${coordinates[1]},${coordinates[0]}`)) {
+            if (this.hits.has(`${x},${y}`)) {
                 return
                 } else {
-                    const ship = this.board[coordinates[1]][coordinates[0]];
+                    const ship = this.board[x][y];
                     ship.hit();
                     if (ship.isSunk()) return ("Ship is Sunk");
-                    this.hits.add(`${coordinates[1]},${coordinates[0]}`);
+                    this.hits.add(`${x},${y}`);
                 };
         }
     }
@@ -86,5 +115,29 @@ export class Gameboard {
         if (n === this.ships.length) {
             return true
             } else return false;
+    }
+
+    addBlockSectors (coordinates) {
+        const x = coordinates[0] ;
+        const y = coordinates[1];
+
+        const positions = [];
+        positions.push (`${x},${y}`);
+        positions.push (`${x+1},${y}`);
+        positions.push (`${x+1},${y+1}`);
+        positions.push (`${x},${y+1}`);
+        positions.push (`${x-1},${y+1}`);
+        positions.push (`${x-1},${y}`);
+        positions.push (`${x-1},${y-1}`);
+        positions.push (`${x},${y-1}`);
+        positions.push (`${x+1},${y-1}`);
+
+
+        for (let pos of positions) {
+            if (!this.blockedSectors.has(pos)) {
+                this.blockedSectors.add(pos);
+            }
+            
+        }
     }
 }
