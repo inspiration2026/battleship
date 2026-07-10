@@ -1,6 +1,6 @@
 export class Ship {
-    constructor (length) {
-        this.length = length;
+    constructor (size) {
+        this.size = size;
         this.hits = 0;
     }
 
@@ -8,7 +8,7 @@ export class Ship {
         this.hits++;
     }
     isSunk() {
-        if (this.length > this.hits) {
+        if (this.size > this.hits) {
             return false
         } else {return true};
     }

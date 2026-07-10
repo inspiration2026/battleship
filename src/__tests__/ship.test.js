@@ -3,11 +3,11 @@ import { Ship } from "../models/ship.js";
 describe('Ship tests', () => {
     test('Creates ship with correct length 2', () => {
         const ship = new Ship (2);
-        expect(ship.length).toBe(2);   
+        expect(ship.size).toBe(2);   
     });
     test('Creates ship with correct length 4', () => {
         const ship = new Ship (4);
-        expect(ship.length).toBe(4);
+        expect(ship.size).toBe(4);
     });
     test('Check function hit', () => {
         const ship = new Ship (4);
