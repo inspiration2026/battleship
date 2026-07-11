@@ -52,24 +52,23 @@ export class Gameboard {
             }
         }
 
-
+        
         if (error) return;
 
     // Placement of the ship
         for(let i = 0; i<ship.size; i++) {
             if (direction === "horizontal") {
                 this.board[x+i][y] = ship;
-                this.addBlockSectors([x+i,y])
+                this.addBlockSectors([x+i,y]);
             }
             if (direction === "vertical") {
                 this.board[x][y+i] = ship;
-                this.addBlockSectors([x,y+i])
+                this.addBlockSectors([x,y+i]);
             }
         }
 
         this.ships.push(ship);
 
-    
     }
 
     hasShipAt (coordinates) {
@@ -88,7 +87,7 @@ export class Gameboard {
 
         if (this.board[x][y] === null) {
             this.missed.add(`${x},${y}`);
-            return;
+            return false;
         } else {
             if (this.hits.has(`${x},${y}`)) {
                 return
@@ -97,6 +96,7 @@ export class Gameboard {
                     ship.hit();
                     if (ship.isSunk()) return ("Ship is Sunk");
                     this.hits.add(`${x},${y}`);
+                    return true;
                 };
         }
     }

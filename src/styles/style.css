@@ -1,0 +1,17 @@
+
+
+
+.board {
+    display: grid; 
+    grid-template-columns: repeat(10, 1fr);
+    border: 1px solid green;
+    margin-left: 50px;
+    width: 400px;
+    height: 400px;
+}
+.cell {
+    border: 1px solid red;
+}
+.cell.ship {
+background-color: rgb(33, 9, 110);
+}
