@@ -16,25 +16,27 @@ export class Gameboard {
         if (x <0 || x >9 || y <0 || y >9) return;
         let error = false;
 
-        if ((direction === "horizontal" && x+ship.size >9) ||
-         ((direction === "vertical") && y+ship.size >9)) {
-            return;
-        if (direction === "horizontal")  {
-            for (let i = 0; i<ship.size; i++) {
-                if (this.board[x+i][y] !== null) {
+        if (direction === "horizontal" && x + ship.size -1 > 9) return;
+        if (direction === "vertical" && y + ship.size -1 > 9) return;
+    
+
+
+        // Overlap check
+        if (direction === "horizontal") {
+            for (let i = 0; i < ship.size; i++) {
+                if (this.board[x + i][y] !== null) {
                     error = true;
                     break;
                 }
             }
-            } else if (direction === "vertical") {
-                for(let i = 0; i<ship.size; i++) {
-                    if (this.board[x][y+i] !== null) {
-                        error = true;
-                        break;
-                    }
-                };
-            };
-        };
+        } else if (direction === "vertical") {
+            for (let i = 0; i < ship.size; i++) {
+                if (this.board[x][y + i] !== null) {
+                    error = true;
+                    break;
+                }
+            }
+        }
 
         if (direction === "horizontal") {
             for (let i = 0; i<ship.size; i++) {
@@ -103,9 +105,6 @@ export class Gameboard {
 
 
     areAllSunk () {
-        // if (this.hits.size >= 20) {
-        //     return true
-        // } else return false;
         let n = 0;
         this.ships.forEach ((ship) => {
             if (ship.isSunk()) {

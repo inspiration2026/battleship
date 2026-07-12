@@ -20,7 +20,7 @@ startingGame() {
     this.setupShips(this.player1);
     console.log("Total ships placed:", this.player1.gameboard.ships.length);
     console.log("ships", this.player1.gameboard.board);
-    // this.setupShips(this.player2);
+    this.setupShips(this.player2);
 
     UI.createBoard();
     UI.renderGameboard(this.player1.gameboard);
@@ -40,19 +40,19 @@ setupShips(player) {
     ship = new Ship(3);
     player.gameboard.placeShip(ship, [0,2], 'vertical');
     ship = new Ship(3);
-    player.gameboard.placeShip(ship, [7,3], 'horizontal'); //!
+    player.gameboard.placeShip(ship, [7,3], 'horizontal');
     ship = new Ship(2);
     player.gameboard.placeShip(ship, [0,0], 'horizontal');
     ship = new Ship(2);
     player.gameboard.placeShip(ship, [4,5], 'vertical');
     ship = new Ship(2);
-    player.gameboard.placeShip(ship, [3,8], 'vertical'); //!
+    player.gameboard.placeShip(ship, [3,8], 'vertical');
     ship = new Ship(1);
-    player.gameboard.placeShip(ship, [9,6], 'horizontal'); //!
+    player.gameboard.placeShip(ship, [9,6], 'horizontal');
     ship = new Ship(1);
     player.gameboard.placeShip(ship, [6,7], 'horizontal'); 
     ship = new Ship(1);
-    player.gameboard.placeShip(ship, [9,9], 'horizontal'); //!
+    player.gameboard.placeShip(ship, [9,9], 'horizontal');
     ship = new Ship(1);
     player.gameboard.placeShip(ship, [7,9], 'horizontal');
 
