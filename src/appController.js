@@ -18,105 +18,71 @@ export class Controller {
 startingGame() {
    
     this.setupShips(this.player1);
-    console.log("Total ships placed:", this.player1.gameboard.ships.length);
-    console.log("ships", this.player1.gameboard.board);
+    this.setupShips(this.player2);
     
     UI.createPlayground();
-
     UI.createBoard(1);
     UI.createBoard(2);
 
-    UI.renderGameboard(this.player1.gameboard, 1);
-    this.setupShips(this.player2);
-    UI.renderGameboard(this.player2.gameboard, 2);
+    UI.renderGameboard(this.player1.gameboard, 1, true);
+    UI.renderGameboard(this.player2.gameboard, 2, false);
 
-    
-    this.makeAttack([0,2]);
-
-    UI.renderAction (this.player2.gameboard, 2, this.player2.gameboard.hits, this.player2.gameboard.missed);
-
-    this.makeAttack([1,2]);
-
-    UI.renderAction (this.player2.gameboard, 2, this.player2.gameboard.hits, this.player2.gameboard.missed);
-
-    this.makeAttack([1,2]);
-
-    UI.renderAction (this.player2.gameboard, 1, this.player1.gameboard.hits, this.player1.gameboard.missed);
-
-    this.makeAttack([0,3]);
-
-    UI.renderAction (this.player2.gameboard, 2, this.player2.gameboard.hits, this.player2.gameboard.missed);
-
-    this.makeAttack([0,4]);
-
-    UI.renderAction (this.player2.gameboard, 2, this.player2.gameboard.hits, this.player2.gameboard.missed);
-
-    this.makeAttack([6,7]);
-
-    UI.renderAction (this.player2.gameboard, 2, this.player2.gameboard.hits, this.player2.gameboard.missed);
-
-    this.makeAttack([3,8]);
-
-    UI.renderAction (this.player2.gameboard, 2, this.player2.gameboard.hits, this.player2.gameboard.missed);
-    
-
-
+    UI.addAttackListeners((coordinates) => {
+    this.makeAttack(coordinates);
+    });
 }
 
 
 
 setupShips(player) {
-    let ship = new Ship(4);
-    player.gameboard.placeShip(ship, [5,0], 'horizontal');
-    ship = new Ship(3);
-    player.gameboard.placeShip(ship, [0,2], 'vertical');
-    ship = new Ship(3);
-    player.gameboard.placeShip(ship, [7,3], 'horizontal');
-    ship = new Ship(2);
-    player.gameboard.placeShip(ship, [0,0], 'horizontal');
-    ship = new Ship(2);
-    player.gameboard.placeShip(ship, [4,5], 'vertical');
-    ship = new Ship(2);
-    player.gameboard.placeShip(ship, [3,8], 'vertical');
-    ship = new Ship(1);
-    player.gameboard.placeShip(ship, [9,6], 'horizontal');
-    ship = new Ship(1);
-    player.gameboard.placeShip(ship, [6,7], 'horizontal'); 
-    ship = new Ship(1);
-    player.gameboard.placeShip(ship, [9,9], 'horizontal');
-    ship = new Ship(1);
-    player.gameboard.placeShip(ship, [7,9], 'horizontal');
+    const configs = [
+            {size: 4, head: [5,0], dir: 'horizontal'},
+            {size: 3, head: [0,2], dir: 'vertical'},
+            {size: 3, head: [7,3], dir: 'horizontal'},
+            {size: 2, head: [0,0], dir: 'horizontal'},
+            {size: 2, head: [4,5], dir: 'vertical'},
+            {size: 2, head: [3,8], dir: 'vertical'},
+            {size: 1, head: [9,6], dir: 'horizontal'},
+            {size: 1, head: [6,7], dir: 'horizontal'},
+            {size: 1, head: [9,9], dir: 'horizontal'},
+            {size: 1, head: [7,9], dir: 'horizontal'},
+        ];
 
-    
+        configs.forEach(cfg => {
+            const ship = new Ship(cfg.size);
+            player.gameboard.placeShip(ship, cfg.head, cfg.dir);
+        });
 }
 
 switchPlayer() {
-    if (this.activePlayer === this.player1) {
-        this.activePlayer = this.player2
-        this.passivePlayer = this.player1;
-    } else {
-        this.activePlayer = this.player1;
-        this.passivePlayer = this.player2;
-    }
+    [this.activePlayer, this.passivePlayer] = [this.passivePlayer, this.activePlayer];
 }
 
 makeAttack(coordinates) {
-    const attack = this.passivePlayer.gameboard.receiveAttack(coordinates);
-    if (attack) {
+    const result = this.passivePlayer.gameboard.receiveAttack(coordinates);
+
+    const playerNum = this.passivePlayer === this.player2 ? 2 : 1;
+    UI.renderAction(this.passivePlayer.gameboard, playerNum);
+
+    if (result) {
+        // Check if a ship was sunk
         const ship = this.passivePlayer.gameboard.board[coordinates[0]][coordinates[1]];
-        if (ship.isSunk()) {
-            if (this.activePlayer === this.player1) {
-                UI.renderSunkShip(2, coordinates);
-            } else {UI.renderSunkShip(1, coordinates);}
+        if (ship && ship.isSunk()) {
+            UI.renderSunkShip(playerNum, coordinates);
         }
-        return true
+
+        if (this.passivePlayer.gameboard.areAllSunk()) {
+            console.log("Game Over! Winner:", this.activePlayer.type);
+            // TODO: UI.showWinMessage(this.activePlayer.type);
+        }
     } else {
         this.switchPlayer();
-        return false
-    };
-    
+    }
 }
 
+checkWin() {
+    return this.passivePlayer.gameboard.areAllSunk();
+}
 
 
 }
