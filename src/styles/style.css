@@ -107,3 +107,12 @@ body {
 #playerBoard2 .cell:hover:not(.hit):not(.miss) {
     background-color: rgba(255, 215, 0, 0.3);
 }
+
+.cell.blocked {
+    background-color: rgba(128, 128, 128, 0.4) !important;
+}
+
+.cell.blocked.hit,
+.cell.blocked.miss {
+    opacity: 0.7;   /* slightly dim attacked blocked cells */
+}

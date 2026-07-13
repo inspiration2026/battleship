@@ -68,15 +68,34 @@ makeAttack(coordinates) {
         // Check if a ship was sunk
         const ship = this.passivePlayer.gameboard.board[coordinates[0]][coordinates[1]];
         if (ship && ship.isSunk()) {
-            UI.renderSunkShip(playerNum, coordinates);
+            const resultData = this.passivePlayer.gameboard.findAllShipCoords(coordinates);
+            console.dir (resultData.shipCoordinates);
+            console.dir (resultData.blockedCoordinates);
+            UI.renderSunkShip(playerNum, resultData.shipCoordinates);
+            UI.renderBlockedCells(playerNum, resultData.blockedCoordinates);   // if you already added this
         }
 
         if (this.passivePlayer.gameboard.areAllSunk()) {
             console.log("Game Over! Winner:", this.activePlayer.type);
-            // TODO: UI.showWinMessage(this.activePlayer.type);
+            return;
+        }
+
+        if (this.activePlayer.type === 'computer') {
+            setTimeout(() => {
+                const coords = this.activePlayer.makeRandomAttack(this.passivePlayer.gameboard);
+                this.makeAttack(coords);
+            }, 1400);
         }
     } else {
+
         this.switchPlayer();
+
+        if (this.activePlayer.type === 'computer') {
+            setTimeout(() => {
+                const coords = this.activePlayer.makeRandomAttack(this.passivePlayer.gameboard);
+                this.makeAttack(coords);
+            }, 700);
+        }
     }
 }
 

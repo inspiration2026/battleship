@@ -86,25 +86,59 @@ export const UI = (() => {
             if (cell) cell.classList.add('miss');
         });
     }
-    
-    function renderSunkShip(playerNumber, coordinates) {
+
+    function renderSunkShip(playerNumber, shipCoordinates) {
         const boardUI = document.getElementById(`playerBoard${playerNumber}`);
-        const cell = boardUI.querySelector(`[data-x="${coordinates[0]}"][data-y="${coordinates[1]}"]`);
-        if (cell) cell.classList.add('sunk');
+        if (!boardUI || !shipCoordinates) return;
+
+        shipCoordinates.forEach(coord => {
+            const x = coord[0];
+            const y = coord[1];
+
+            const cell = boardUI.querySelector(`[data-x="${x}"][data-y="${y}"]`);
+            if (cell) cell.classList.add('sunk');
+        });
+    }
+    
+    function renderBlockedCells(playerNumber, blockedCoordinates) {
+        var boardUI = document.getElementById("playerBoard" + playerNumber);
+        if (!boardUI || !blockedCoordinates) return;
+
+        for (var i = 0; i < blockedCoordinates.length; i++) {
+            var coord = blockedCoordinates[i];
+            var x = 0;
+            var y = 0;
+
+            if (Array.isArray(coord)) {
+                x = coord[0];
+                y = coord[1];
+            } else if (typeof coord === "string") {
+                var parts = coord.split(",");
+                x = Number(parts[0]);
+                y = Number(parts[1]);
+            } else {
+                continue;
+            }
+
+            var cell = boardUI.querySelector('[data-x="' + x + '"][data-y="' + y + '"]');
+            if (cell) {
+                cell.classList.add("blocked");
+            }
+        }
     }
 
     function addAttackListeners(onAttack) {
-    const opponentBoard = document.getElementById('playerBoard2');
+        const opponentBoard = document.getElementById('playerBoard2');
 
-    opponentBoard.addEventListener('click', (e) => {
-        const cell = e.target.closest('.cell');
-        if (!cell) return;
+        opponentBoard.addEventListener('click', (e) => {
+            const cell = e.target.closest('.cell');
+            if (!cell) return;
 
-        const x = parseInt(cell.dataset.x);
-        const y = parseInt(cell.dataset.y);
+            const x = parseInt(cell.dataset.x);
+            const y = parseInt(cell.dataset.y);
 
-        onAttack([x, y]); 
-    });
+            onAttack([x, y]); 
+        });
     }
 
     return {
@@ -112,11 +146,9 @@ export const UI = (() => {
         createBoard,
         renderGameboard,
         renderAction,
-        renderSunkShip,
-        addAttackListeners
-    }
-
-
-})();
-
-
+        addAttackListeners,
+        renderBlockedCells,
+        renderSunkShip
+    };
+}
+)();

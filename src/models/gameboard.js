@@ -92,7 +92,7 @@ export class Gameboard {
             return false;
         } else {
             if (this.hits.has(`${x},${y}`)) {
-                return
+                return false
                 } else {
                     const ship = this.board[x][y];
                     ship.hit();
@@ -116,26 +116,78 @@ export class Gameboard {
     }
 
     addBlockSectors (coordinates) {
-        const x = coordinates[0] ;
-        const y = coordinates[1];
+      const [x, y] = coordinates;
+    const offsets = [
+        [0, 0], [1, 0], [1, 1], [0, 1], [-1, 1],
+        [-1, 0], [-1, -1], [0, -1], [1, -1]
+    ];
 
-        const positions = [];
-        positions.push (`${x},${y}`);
-        positions.push (`${x+1},${y}`);
-        positions.push (`${x+1},${y+1}`);
-        positions.push (`${x},${y+1}`);
-        positions.push (`${x-1},${y+1}`);
-        positions.push (`${x-1},${y}`);
-        positions.push (`${x-1},${y-1}`);
-        positions.push (`${x},${y-1}`);
-        positions.push (`${x+1},${y-1}`);
-
-
-        for (let pos of positions) {
-            if (!this.blockedSectors.has(pos)) {
-                this.blockedSectors.add(pos);
-            }
-            
+        for (const [dx, dy] of offsets) {
+            this.blockedSectors.add(`${x + dx},${y + dy}`);
         }
+    }
+
+    findAllShipCoords(coordinates) {
+        let [x, y] = coordinates;
+        const ship = this.board[x][y];
+        
+        if (!ship) return { shipCoordinates: [], blockedCoordinates: [] };
+
+        const shipCoords = [];
+        const blockedCoords = new Set();        // using Set to avoid duplicates
+        const offsets = [
+            [0, 0], [1, 0], [1, 1], [0, 1], [-1, 1],
+            [-1, 0], [-1, -1], [0, -1], [1, -1]
+        ];
+
+        let currentX = x;
+        let currentY = y;
+
+        shipCoords.push([currentX, currentY]);
+
+        for (let l = 1; l < ship.size; l++) {
+            let found = false;
+
+            for (const [dx, dy] of offsets) {
+                const nx = currentX + dx;
+                const ny = currentY + dy;
+
+                if (nx < 0 || nx > 9 || ny < 0 || ny > 9) continue;
+
+                if (this.board[nx][ny] === ship) {
+                    const alreadyAdded = shipCoords.some(c => c[0] === nx && c[1] === ny);
+                    if (!alreadyAdded) {
+                        shipCoords.push([nx, ny]);
+                        currentX = nx;
+                        currentY = ny;
+                        found = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!found) break;
+        }
+
+        // === BLOCKED COORDS LOGIC ===
+        for (const [sx, sy] of shipCoords) {
+            for (const [dx, dy] of offsets) {
+                const bx = sx + dx;
+                const by = sy + dy;
+                if (bx >= 0 && bx < 10 && by >= 0 && by < 10) {
+                    blockedCoords.add(`${bx},${by}`);
+                }
+            }
+        }
+
+        // Remove ship cells from blocked
+        for (const [sx, sy] of shipCoords) {
+            blockedCoords.delete(`${sx},${sy}`);
+        }
+
+        return {
+            shipCoordinates: shipCoords, 
+            blockedCoordinates: Array.from(blockedCoords)
+        };
     }
 }
