@@ -20,14 +20,45 @@ startingGame() {
     this.setupShips(this.player1);
     console.log("Total ships placed:", this.player1.gameboard.ships.length);
     console.log("ships", this.player1.gameboard.board);
-    this.setupShips(this.player2);
-
-    UI.createBoard();
-    UI.renderGameboard(this.player1.gameboard);
-
-    // this.makeAttack([0,2]);
     
-    // this.makeAttack([0,3]);
+    UI.createPlayground();
+
+    UI.createBoard(1);
+    UI.createBoard(2);
+
+    UI.renderGameboard(this.player1.gameboard, 1);
+    this.setupShips(this.player2);
+    UI.renderGameboard(this.player2.gameboard, 2);
+
+    
+    this.makeAttack([0,2]);
+
+    UI.renderAction (this.player2.gameboard, 2, this.player2.gameboard.hits, this.player2.gameboard.missed);
+
+    this.makeAttack([1,2]);
+
+    UI.renderAction (this.player2.gameboard, 2, this.player2.gameboard.hits, this.player2.gameboard.missed);
+
+    this.makeAttack([1,2]);
+
+    UI.renderAction (this.player2.gameboard, 1, this.player1.gameboard.hits, this.player1.gameboard.missed);
+
+    this.makeAttack([0,3]);
+
+    UI.renderAction (this.player2.gameboard, 2, this.player2.gameboard.hits, this.player2.gameboard.missed);
+
+    this.makeAttack([0,4]);
+
+    UI.renderAction (this.player2.gameboard, 2, this.player2.gameboard.hits, this.player2.gameboard.missed);
+
+    this.makeAttack([6,7]);
+
+    UI.renderAction (this.player2.gameboard, 2, this.player2.gameboard.hits, this.player2.gameboard.missed);
+
+    this.makeAttack([3,8]);
+
+    UI.renderAction (this.player2.gameboard, 2, this.player2.gameboard.hits, this.player2.gameboard.missed);
+    
 
 
 }
@@ -72,6 +103,12 @@ switchPlayer() {
 makeAttack(coordinates) {
     const attack = this.passivePlayer.gameboard.receiveAttack(coordinates);
     if (attack) {
+        const ship = this.passivePlayer.gameboard.board[coordinates[0]][coordinates[1]];
+        if (ship.isSunk()) {
+            if (this.activePlayer === this.player1) {
+                UI.renderSunkShip(2, coordinates);
+            } else {UI.renderSunkShip(1, coordinates);}
+        }
         return true
     } else {
         this.switchPlayer();

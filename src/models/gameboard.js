@@ -96,7 +96,6 @@ export class Gameboard {
                 } else {
                     const ship = this.board[x][y];
                     ship.hit();
-                    if (ship.isSunk()) return ("Ship is Sunk");
                     this.hits.add(`${x},${y}`);
                     return true;
                 };

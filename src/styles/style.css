@@ -1,5 +1,8 @@
 
-
+.playGround {
+    display: flex;
+    gap: 50px;
+}
 
 .board {
     display: grid; 
@@ -9,9 +12,23 @@
     width: 400px;
     height: 400px;
 }
+#playerBoard2 .cell.ship{
+    background-color: white;
+}
 .cell {
     border: 1px solid red;
 }
 .cell.ship {
 background-color: rgb(33, 9, 110);
+}
+
+#playerBoard2 .cell.ship.hit {
+    background-color: rgb(229, 8, 16);
+}
+.cell.miss {
+    background-color: rgb(13, 115, 231);
+}
+
+#playerBoard2 .cell.ship.hit.sunk {
+    background-color: rgb(3, 1, 1);
 }
