@@ -9,6 +9,7 @@ export class Controller {
         this.player2 = new Player('computer');
         this.activePlayer = this.player1;
         this.passivePlayer = this.player2;
+        this.isProcessingAttack = false;
 
         this.startingGame();
         
@@ -59,43 +60,42 @@ switchPlayer() {
 }
 
 makeAttack(coordinates) {
+    if (this.isProcessingAttack) return;
+    this.isProcessingAttack = true;
+
     const result = this.passivePlayer.gameboard.receiveAttack(coordinates);
 
     const playerNum = this.passivePlayer === this.player2 ? 2 : 1;
+    console.log ('active player is ' + playerNum)
     UI.renderAction(this.passivePlayer.gameboard, playerNum);
 
     if (result) {
         // Check if a ship was sunk
         const ship = this.passivePlayer.gameboard.board[coordinates[0]][coordinates[1]];
+
         if (ship && ship.isSunk()) {
             const resultData = this.passivePlayer.gameboard.findAllShipCoords(coordinates);
-            console.dir (resultData.shipCoordinates);
-            console.dir (resultData.blockedCoordinates);
             UI.renderSunkShip(playerNum, resultData.shipCoordinates);
-            UI.renderBlockedCells(playerNum, resultData.blockedCoordinates);   // if you already added this
+            UI.renderBlockedCells(playerNum, resultData.blockedCoordinates);
         }
 
-        if (this.passivePlayer.gameboard.areAllSunk()) {
+        if (this.checkWin()) {
             console.log("Game Over! Winner:", this.activePlayer.type);
             return;
         }
 
-        if (this.activePlayer.type === 'computer') {
-            setTimeout(() => {
-                const coords = this.activePlayer.makeRandomAttack(this.passivePlayer.gameboard);
-                this.makeAttack(coords);
-            }, 1400);
-        }
     } else {
-
         this.switchPlayer();
+    }
 
-        if (this.activePlayer.type === 'computer') {
-            setTimeout(() => {
-                const coords = this.activePlayer.makeRandomAttack(this.passivePlayer.gameboard);
-                this.makeAttack(coords);
-            }, 700);
-        }
+    if (this.activePlayer.type === 'computer') {
+        setTimeout(() => {
+            const coords = this.activePlayer.makeRandomAttack(this.passivePlayer.gameboard);
+            this.isProcessingAttack = false;
+            this.makeAttack(coords);
+        }, 1000);
+    } else {
+        this.isProcessingAttack = false;
     }
 }
 

@@ -134,6 +134,12 @@ export const UI = (() => {
             const cell = e.target.closest('.cell');
             if (!cell) return;
 
+            if (cell.classList.contains('hit') || 
+                cell.classList.contains('miss') || 
+                cell.classList.contains('blocked')) {
+                return;
+            }
+            
             const x = parseInt(cell.dataset.x);
             const y = parseInt(cell.dataset.y);
 

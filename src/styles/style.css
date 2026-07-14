@@ -87,20 +87,48 @@ body {
     background-color: transparent;
 }
 
-/* Attacks */
+/* Hit Animation */
 .cell.hit {
-    background-color: var(--hit-color) !important;
+    animation: hitExplosion 0.8s ease forwards;
+    background-color: #e50810 !important;
     color: white;
 }
 
+@keyframes hitExplosion {
+    0%   { transform: scale(0.6); background-color: #ffaa00; }
+    40%  { transform: scale(1.25); }
+    70%  { transform: scale(0.95); }
+    100% { transform: scale(1); background-color: #e50810; }
+}
+
+/* Miss Animation */
 .cell.miss {
-    background-color: var(--miss-color);
+    animation: missSplash 0.6s ease;
+    background-color: #0d73e7 !important;
     color: white;
 }
 
+@keyframes missSplash {
+    0%   { transform: scale(0.8); opacity: 0.6; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Sunk */
 .cell.sunk {
     background-color: var(--sunk-color) !important;
     border-color: gold;
+    animation: sunkAnimation 0.8s ease forwards;
+}
+
+@keyframes sunkAnimation {
+    0% {
+        filter: brightness(1.8);
+        transform: scale(1.05);
+    }
+    100% {
+        filter: brightness(1);
+        transform: scale(1);
+    }
 }
 
 /* Hover */
