@@ -6,7 +6,8 @@ export class Gameboard {
         this.ships = [];
         this.missed = new Set();
         this.hits = new Set();
-        this.blockedSectors = new Set();
+        this.blockedSectorsShipPlacement = new Set();
+        this.attackedBlocked = new Set();
     }
 
     placeShip (ship, head, direction) {
@@ -40,14 +41,14 @@ export class Gameboard {
 
         if (direction === "horizontal") {
             for (let i = 0; i<ship.size; i++) {
-                if (this.blockedSectors.has(`${x+i},${y}`)) {
+                if (this.blockedSectorsShipPlacement.has(`${x+i},${y}`)) {
                     error = true;
                     break;
                 }
             }
         } else if (direction === "vertical") {
             for(let i = 0; i<ship.size; i++) {
-                if (this.blockedSectors.has(`${x},${y+i}`)) {
+                if (this.blockedSectorsShipPlacement.has(`${x},${y+i}`)) {
                         error = true;
                         break;
                     }
@@ -87,6 +88,10 @@ export class Gameboard {
         const x = coordinates[0];
         const y = coordinates[1];
 
+        if (this.attackedBlocked.has(x,y)) {
+            return false;
+        }
+
         if (this.board[x][y] === null) {
             this.missed.add(`${x},${y}`);
             return false;
@@ -116,14 +121,14 @@ export class Gameboard {
     }
 
     addBlockSectors (coordinates) {
-      const [x, y] = coordinates;
+    const [x, y] = coordinates;
     const offsets = [
         [0, 0], [1, 0], [1, 1], [0, 1], [-1, 1],
         [-1, 0], [-1, -1], [0, -1], [1, -1]
     ];
 
         for (const [dx, dy] of offsets) {
-            this.blockedSectors.add(`${x + dx},${y + dy}`);
+            this.blockedSectorsShipPlacement.add(`${x + dx},${y + dy}`);
         }
     }
 
@@ -176,8 +181,13 @@ export class Gameboard {
                 const by = sy + dy;
                 if (bx >= 0 && bx < 10 && by >= 0 && by < 10) {
                     blockedCoords.add(`${bx},${by}`);
+                    // console.log(blockedCoords);
                 }
             }
+        }
+
+        for (const pos of blockedCoords) {
+            this.attackedBlocked.add(pos);
         }
 
         // Remove ship cells from blocked

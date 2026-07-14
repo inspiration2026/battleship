@@ -10,6 +10,8 @@ export class Controller {
         this.activePlayer = this.player1;
         this.passivePlayer = this.player2;
         this.isProcessingAttack = false;
+        this.huntMode = false;
+        this.huntTarget = null;
 
         this.startingGame();
         
@@ -60,26 +62,36 @@ switchPlayer() {
 }
 
 makeAttack(coordinates) {
+    console.log(`blocked sectors`, this.activePlayer.type, this.passivePlayer.gameboard.attackedBlocked);
     if (this.isProcessingAttack) return;
     this.isProcessingAttack = true;
 
     const result = this.passivePlayer.gameboard.receiveAttack(coordinates);
 
     const playerNum = this.passivePlayer === this.player2 ? 2 : 1;
-    console.log ('active player is ' + playerNum)
     UI.renderAction(this.passivePlayer.gameboard, playerNum);
 
     if (result) {
-        // Check if a ship was sunk
         const ship = this.passivePlayer.gameboard.board[coordinates[0]][coordinates[1]];
+        
+        if (ship) {
+            if (this.activePlayer.type === 'computer') {
+            this.activePlayer.registerHit(coordinates[0], coordinates[1]);
+            }
+        }
 
         if (ship && ship.isSunk()) {
+            if (this.activePlayer.type === 'computer') {
+                this.activePlayer.resetHuntMode();
+            }
+
             const resultData = this.passivePlayer.gameboard.findAllShipCoords(coordinates);
             UI.renderSunkShip(playerNum, resultData.shipCoordinates);
             UI.renderBlockedCells(playerNum, resultData.blockedCoordinates);
         }
 
         if (this.checkWin()) {
+            this.isProcessingAttack = true;
             console.log("Game Over! Winner:", this.activePlayer.type);
             return;
         }
@@ -90,7 +102,11 @@ makeAttack(coordinates) {
 
     if (this.activePlayer.type === 'computer') {
         setTimeout(() => {
-            const coords = this.activePlayer.makeRandomAttack(this.passivePlayer.gameboard);
+            let coords = this.activePlayer.makeBestAttack(this.passivePlayer.gameboard);
+            
+            while (this.passivePlayer.gameboard.attackedBlocked.has(`${coords[0]},${coords[1]}`)) {
+                coords = this.activePlayer.makeBestAttack(this.passivePlayer.gameboard);
+            }
             this.isProcessingAttack = false;
             this.makeAttack(coords);
         }, 1000);
