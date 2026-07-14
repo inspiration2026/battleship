@@ -19,20 +19,36 @@ export class Controller {
 
 
 startingGame() {
-   
+
     this.setupShips(this.player1);
     this.setupShips(this.player2);
+
+    const p1Board = this.player1.gameboard;
+    const p2Board = this.player2.gameboard;
+
+    UI.showScreen('start-screen');
     
-    UI.createPlayground();
-    UI.createBoard(1);
-    UI.createBoard(2);
+    UI.initStartScreen(() => {
+        console.log("Start button clicked - creating boards...");
 
-    UI.renderGameboard(this.player1.gameboard, 1, true);
-    UI.renderGameboard(this.player2.gameboard, 2, false);
+        // UI.createPlayground();
+        UI.createBoard(1);
+        UI.createBoard(2);
 
-    UI.addAttackListeners((coordinates) => {
-    this.makeAttack(coordinates);
+        UI.renderGameboard(p1Board, 1, true);
+        UI.renderGameboard(p2Board, 2, false);
+
+    
+
+        UI.addAttackListeners((coordinates) => {
+        this.makeAttack(coordinates);
+        });
+
+        UI.showScreen('game-screen');
     });
+
+    UI.initWinScreen();
+
 }
 
 
@@ -93,6 +109,7 @@ makeAttack(coordinates) {
         if (this.checkWin()) {
             this.isProcessingAttack = true;
             console.log("Game Over! Winner:", this.activePlayer.type);
+            UI.showScreen('win-screen');
             return;
         }
 
@@ -103,7 +120,7 @@ makeAttack(coordinates) {
     if (this.activePlayer.type === 'computer') {
         setTimeout(() => {
             let coords = this.activePlayer.makeBestAttack(this.passivePlayer.gameboard);
-            
+
             while (this.passivePlayer.gameboard.attackedBlocked.has(`${coords[0]},${coords[1]}`)) {
                 coords = this.activePlayer.makeBestAttack(this.passivePlayer.gameboard);
             }

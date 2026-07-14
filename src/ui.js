@@ -6,6 +6,7 @@ export const UI = (() => {
     }
 
     function createBoard(playerNumber) {
+        console.log(`Creating board for player ${playerNumber}`);
         const wrapper = document.createElement('div');
         wrapper.classList.add('board-wrapper');
 
@@ -147,6 +148,32 @@ export const UI = (() => {
         });
     }
 
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(screen => {
+            screen.classList.remove('active');
+        });
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    function initStartScreen(onStartCallback) {
+        console.log("initStartScreen called - count:", ++window.initCount || (window.initCount = 1));
+        const startBtn = document.getElementById('start-game-btn');
+        if (startBtn) {
+            startBtn.addEventListener('click', () => {
+                console.log("Start button clicked!");
+                onStartCallback();
+            });
+        }
+    }
+
+    function initWinScreen() {
+        const restartBtn = document.getElementById('restart-btn');
+        restartBtn.addEventListener('click', () => {
+            location.reload();
+        }); 
+    }
+
+
     return {
         createPlayground,
         createBoard,
@@ -154,7 +181,13 @@ export const UI = (() => {
         renderAction,
         addAttackListeners,
         renderBlockedCells,
-        renderSunkShip
+        renderSunkShip,
+        showScreen,
+        initStartScreen,
+        initWinScreen
     };
 }
+
+
+
 )();
