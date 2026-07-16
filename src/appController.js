@@ -45,6 +45,10 @@ startingGame() {
         });
 
         UI.showScreen('game-screen');
+
+        UI.createShipYard();
+        UI.makeShipsDraggable();
+        UI.makeBoardDroppable();
     });
 
     UI.initWinScreen();

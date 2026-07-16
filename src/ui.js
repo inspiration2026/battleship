@@ -1,4 +1,10 @@
 export const UI = (() => {
+
+    let currentPreviewCells = [];
+    let currentOrientation = 'horizontal';
+    let draggedShipData = null;
+
+
     function createPlayground() {
         const playground = document.createElement('div');
         playground.classList.add('playground');
@@ -173,6 +179,114 @@ export const UI = (() => {
         }); 
     }
 
+    function createShipYard () {
+        const ships = [4,3,3,2,2,2,1,1,1,1];
+        const shipYard = document.getElementById('ship-yard-container');
+        ships.forEach ((size, index) => {
+            const ship = document.createElement('div');
+            ship.style.width = `${42*size}px`;
+            ship.classList.add ('ship-item');
+            ship.dataset.size = size;
+            ship.dataset.id = index;
+            ship.draggable = true;
+            shipYard.appendChild (ship);
+        })
+    }
+
+    function makeShipsDraggable() {
+        const ships = document.querySelectorAll('.ship-item');
+        
+        ships.forEach(ship => {
+            ship.addEventListener('dragstart', (e) => {
+                const size = parseInt(ship.dataset.size);
+                const rect = ship.getBoundingClientRect();
+                const mouseX = e.clientX - rect.left;
+                const grabOffset = Math.floor(mouseX / 42);
+                draggedShipData = {
+                    size: size,
+                    id: ship.dataset.id,
+                    grabOffset: Math.min(grabOffset, size - 1)      
+                };
+                 
+                
+                e.dataTransfer.setData('text/plain', JSON.stringify(draggedShipData));
+                ship.classList.add('dragging');
+            });
+
+            ship.addEventListener('dragend', () => {
+                ship.classList.remove('dragging');
+                clearPreview();
+            });
+        });
+    }
+
+    function makeBoardDroppable() {
+        const cells = document.querySelectorAll('.cell');
+        
+        cells.forEach(cell => {
+            cell.addEventListener('dragover', (e) => {
+                e.preventDefault();  
+                const x = parseInt(cell.dataset.x);
+                const y = parseInt(cell.dataset.y);
+            
+            showPreview(x, y, draggedShipData.size, currentOrientation, draggedShipData.grabOffset);
+            });
+
+            cell.addEventListener('dragleave', () => {
+                clearPreview();
+            });
+
+            cell.addEventListener('drop', (e) => {
+                e.preventDefault();
+                clearPreview();
+                
+                const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+                const size = data.size;
+                
+                const x = parseInt(cell.dataset.x);
+                const y = parseInt(cell.dataset.y);
+
+                console.log(`Drop ship size ${size} at [${x},${y}] orientation: ${currentOrientation}`);
+                
+                // Remove ship from yard
+                const draggedShip = document.querySelector('.dragging');
+                if (draggedShip) draggedShip.remove();
+            });
+        });
+    }   
+
+    function clearPreview() {
+        currentPreviewCells.forEach(cell => {
+            cell.classList.remove('ship-preview');
+        });
+        currentPreviewCells = [];
+    }
+
+    function showPreview(mouseX, mouseY, size, orientation, grabOffset = 0) {
+        clearPreview();
+
+        for (let i = 0; i < size; i++) {
+            let nx = mouseX;
+            let ny = mouseY;
+
+            if (orientation === 'horizontal') {
+                nx = mouseX + (i - grabOffset);
+            } else {
+                ny = mouseY + (i - grabOffset);
+            }
+
+            if (nx < 0 || nx > 9 || ny < 0 || ny > 9) return; // invalid
+
+            const cell = document.querySelector(`[data-x="${nx}"][data-y="${ny}"]`);
+            if (cell) {
+                cell.classList.add('ship-preview');
+                currentPreviewCells.push(cell);
+            }
+        }
+    }
+
+
+
 
     return {
         createPlayground,
@@ -184,7 +298,10 @@ export const UI = (() => {
         renderSunkShip,
         showScreen,
         initStartScreen,
-        initWinScreen
+        initWinScreen,
+        createShipYard,
+        makeShipsDraggable,
+        makeBoardDroppable
     };
 }
 

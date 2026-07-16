@@ -230,3 +230,49 @@ body {
 .cell.blocked.miss {
     opacity: 0.7;   /* slightly dim attacked blocked cells */
 }
+
+.playingArea {
+    display: flex;
+    gap: 30px;
+}
+
+.ship-yard {
+    width: 220px;
+    background: rgba(0,0,0,0.3);
+    padding: 15px;
+    border-radius: 8px;
+    border: 2px solid #ffd700;
+}
+.ship-yard h3 {
+    margin-bottom: 20px;
+}
+
+.ships-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ship-item {
+    height: 42px;
+    background: var(--primary-color);
+    border-radius: 4px;
+    cursor: grab;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    user-select: none;
+    border: 2px solid red
+    
+}
+
+.ship-item.dragging {
+    opacity: 0.5;
+}
+
+.cell.ship-preview {
+    background-color: rgba(0, 255, 0, 0.3) !important;
+    border-color: lime;
+}
