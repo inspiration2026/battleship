@@ -202,6 +202,7 @@ export const UI = (() => {
                 const rect = ship.getBoundingClientRect();
                 const mouseX = e.clientX - rect.left;
                 const grabOffset = Math.floor(mouseX / 42);
+
                 draggedShipData = {
                     size: size,
                     id: ship.dataset.id,
@@ -226,10 +227,11 @@ export const UI = (() => {
         cells.forEach(cell => {
             cell.addEventListener('dragover', (e) => {
                 e.preventDefault();  
-                const x = parseInt(cell.dataset.x);
-                const y = parseInt(cell.dataset.y);
-            
-            showPreview(x, y, draggedShipData.size, currentOrientation, draggedShipData.grabOffset);
+                if (draggedShipData) {
+                    const x = parseInt(cell.dataset.x);
+                    const y = parseInt(cell.dataset.y);
+                    showPreview(x, y, draggedShipData.size, currentOrientation, draggedShipData.grabOffset);
+                }
             });
 
             cell.addEventListener('dragleave', () => {
@@ -242,11 +244,21 @@ export const UI = (() => {
                 
                 const data = JSON.parse(e.dataTransfer.getData('text/plain'));
                 const size = data.size;
+                const grabOffset = data.grabOffset;
                 
                 const x = parseInt(cell.dataset.x);
                 const y = parseInt(cell.dataset.y);
 
-                console.log(`Drop ship size ${size} at [${x},${y}] orientation: ${currentOrientation}`);
+                let headX = x;
+                let headY = y;
+
+                if (currentOrientation === 'horizontal') {
+                    headX = x - grabOffset;
+                } else {
+                    headY = y - grabOffset;
+                }
+
+                console.log(`Drop ship size ${size} at head [${headX},${headY}] orientation: ${currentOrientation}`);
                 
                 // Remove ship from yard
                 const draggedShip = document.querySelector('.dragging');
