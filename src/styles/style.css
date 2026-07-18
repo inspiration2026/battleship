@@ -247,6 +247,11 @@ body {
     margin-bottom: 20px;
 }
 
+.ship-yard h6 {
+    margin-top: 20px;
+}
+
+
 .ships-container {
     display: flex;
     flex-direction: column;

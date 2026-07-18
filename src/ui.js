@@ -1,7 +1,6 @@
 export const UI = (() => {
 
     let currentPreviewCells = [];
-    let currentOrientation = 'horizontal';
     let draggedShipData = null;
 
 
@@ -108,26 +107,26 @@ export const UI = (() => {
     }
     
     function renderBlockedCells(playerNumber, blockedCoordinates) {
-        var boardUI = document.getElementById("playerBoard" + playerNumber);
+        const boardUI = document.getElementById("playerBoard" + playerNumber);
         if (!boardUI || !blockedCoordinates) return;
 
-        for (var i = 0; i < blockedCoordinates.length; i++) {
-            var coord = blockedCoordinates[i];
-            var x = 0;
-            var y = 0;
+        for (let i = 0; i < blockedCoordinates.length; i++) {
+            const coord = blockedCoordinates[i];
+            let x = 0;
+            let y = 0;
 
             if (Array.isArray(coord)) {
                 x = coord[0];
                 y = coord[1];
             } else if (typeof coord === "string") {
-                var parts = coord.split(",");
+                const parts = coord.split(",");
                 x = Number(parts[0]);
                 y = Number(parts[1]);
             } else {
                 continue;
             }
 
-            var cell = boardUI.querySelector('[data-x="' + x + '"][data-y="' + y + '"]');
+            const cell = boardUI.querySelector(`[data-x="${x}"][data-y="${y}"]`);
             if (cell) {
                 cell.classList.add("blocked");
             }
@@ -182,16 +181,28 @@ export const UI = (() => {
     function createShipYard () {
         const ships = [4,3,3,2,2,2,1,1,1,1];
         const shipYard = document.getElementById('ship-yard-container');
-        ships.forEach ((size, index) => {
+        ships.forEach ((size) => {
             const ship = document.createElement('div');
             ship.style.width = `${42*size}px`;
             ship.classList.add ('ship-item');
             ship.dataset.size = size;
-            ship.dataset.id = index;
+            ship.dataset.direction = 'horizontal';
             ship.draggable = true;
             shipYard.appendChild (ship);
         })
+
     }
+    function removeShipFromTheYard () {
+        const draggedShip = document.querySelector('.dragging');
+        if (draggedShip) draggedShip.remove();
+    }
+
+    function findGrabOffset (direction, mouseX, mouseY) {
+        if (direction === 'horizontal') {
+            return Math.floor(mouseX / 42);
+        } else return Math.floor(mouseY / 42);
+    }
+    
 
     function makeShipsDraggable() {
         const ships = document.querySelectorAll('.ship-item');
@@ -201,17 +212,36 @@ export const UI = (() => {
                 const size = parseInt(ship.dataset.size);
                 const rect = ship.getBoundingClientRect();
                 const mouseX = e.clientX - rect.left;
-                const grabOffset = Math.floor(mouseX / 42);
+                const mouseY = e.clientY - rect.top;
+                const direction = ship.dataset.direction;
+                const grabOffset = findGrabOffset(direction, mouseX, mouseY);
 
                 draggedShipData = {
                     size: size,
                     id: ship.dataset.id,
-                    grabOffset: Math.min(grabOffset, size - 1)      
+                    grabOffset: Math.min(grabOffset, size - 1),
+                    direction: direction
                 };
                  
                 
                 e.dataTransfer.setData('text/plain', JSON.stringify(draggedShipData));
                 ship.classList.add('dragging');
+            });
+
+            ship.addEventListener('dblclick', () => {
+                const size = parseInt(ship.dataset.size);
+                let direction = ship.dataset.direction;
+                direction = direction === 'horizontal' ?  'vertical' : 'horizontal';
+
+                if (direction === 'vertical') {
+                    ship.style.width = `42px`;
+                    ship.style.height = `${42*size}px`;
+                    ship.dataset.direction = 'vertical';
+                } else {
+                    ship.style.width = `${42*size}px`;
+                    ship.style.height = `42px`;
+                    ship.dataset.direction = 'horizontal';
+                }
             });
 
             ship.addEventListener('dragend', () => {
@@ -227,15 +257,12 @@ export const UI = (() => {
         cells.forEach(cell => {
             cell.addEventListener('dragover', (e) => {
                 e.preventDefault();  
+                
                 if (draggedShipData) {
                     const x = parseInt(cell.dataset.x);
                     const y = parseInt(cell.dataset.y);
-                    showPreview(x, y, draggedShipData.size, currentOrientation, draggedShipData.grabOffset);
+                    showPreview(x, y, draggedShipData.size, draggedShipData.direction, draggedShipData.grabOffset);
                 }
-            });
-
-            cell.addEventListener('dragleave', () => {
-                clearPreview();
             });
 
             cell.addEventListener('drop', (e) => {
@@ -245,6 +272,7 @@ export const UI = (() => {
                 const data = JSON.parse(e.dataTransfer.getData('text/plain'));
                 const size = data.size;
                 const grabOffset = data.grabOffset;
+                const direction = data.direction;
                 
                 const x = parseInt(cell.dataset.x);
                 const y = parseInt(cell.dataset.y);
@@ -252,18 +280,22 @@ export const UI = (() => {
                 let headX = x;
                 let headY = y;
 
-                if (currentOrientation === 'horizontal') {
-                    headX = x - grabOffset;
+                if (direction === 'horizontal') {
+                    headX = headX - grabOffset;
                 } else {
-                    headY = y - grabOffset;
+                    headY = headY - grabOffset;
                 }
+                const dataToSend = {
+                    size: size,
+                    head: [headX,headY],
+                    orientation: direction     
+                }
+                const event = new CustomEvent ('ship to place', {detail: dataToSend});
+                window.dispatchEvent(event);
 
-                console.log(`Drop ship size ${size} at head [${headX},${headY}] orientation: ${currentOrientation}`);
+                console.log(`Drop ship size ${size} at head [${headX},${headY}] orientation: ${direction}`);
                 
-                // Remove ship from yard
-                const draggedShip = document.querySelector('.dragging');
-                if (draggedShip) draggedShip.remove();
-            });
+            }); 
         });
     }   
 
@@ -276,6 +308,9 @@ export const UI = (() => {
 
     function showPreview(mouseX, mouseY, size, orientation, grabOffset = 0) {
         clearPreview();
+
+        console.log(mouseX, mouseY, size, orientation, grabOffset);
+
 
         for (let i = 0; i < size; i++) {
             let nx = mouseX;
@@ -313,7 +348,8 @@ export const UI = (() => {
         initWinScreen,
         createShipYard,
         makeShipsDraggable,
-        makeBoardDroppable
+        makeBoardDroppable,
+        removeShipFromTheYard
     };
 }
 

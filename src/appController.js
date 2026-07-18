@@ -20,7 +20,7 @@ export class Controller {
 
 startingGame() {
 
-    this.setupShips(this.player1);
+    // this.setupShips(this.player1);
     this.setupShips(this.player2);
 
     const p1Board = this.player1.gameboard;
@@ -31,7 +31,6 @@ startingGame() {
     UI.initStartScreen(() => {
         console.log("Start button clicked - creating boards...");
 
-        // UI.createPlayground();
         UI.createBoard(1);
         UI.createBoard(2);
 
@@ -52,6 +51,21 @@ startingGame() {
     });
 
     UI.initWinScreen();
+
+    window.addEventListener('ship to place', (e) => {
+        const data = e.detail;
+        console.log("Data received:", data.head, data.size, data.orientation);
+
+        const ship = new Ship (data.size);
+        const placeShip = this.player1.gameboard.placeShip (ship, data.head, data.orientation);
+
+        if (placeShip) {
+            console.log ('Ship placed');
+            UI.removeShipFromTheYard();   
+            UI.renderGameboard(p1Board, 1, true);
+        } else console.log ('not placed !')
+
+    });
 
 }
 
