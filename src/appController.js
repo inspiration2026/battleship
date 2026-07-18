@@ -20,7 +20,7 @@ export class Controller {
 
 startingGame() {
 
-    this.setupShips(this.player2);
+    this.player2.randomShipPlacement();
 
     const p1Board = this.player1.gameboard;
     const p2Board = this.player2.gameboard;
@@ -80,6 +80,8 @@ startingGame() {
 
 
 setupShips(player) {
+    
+
     const configs = [
             {size: 4, head: [5,0], dir: 'horizontal'},
             {size: 3, head: [0,2], dir: 'vertical'},
@@ -134,8 +136,8 @@ makeAttack(coordinates) {
 
         if (this.checkWin()) {
             this.isProcessingAttack = true;
-            if (this.activePlayer === 'human') {
-            console.log("Game Over! Winner:", this.activePlayer.type);
+            if (this.activePlayer.type === 'human') {
+            console.log("Congratulations! Winner:", this.activePlayer.type);
             UI.showScreen('win-screen');
             return;
             } else {

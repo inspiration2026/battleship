@@ -14,11 +14,11 @@ export class Gameboard {
         const x = head[0];
         const y = head[1];
     // Checks
-        if (x <0 || x >9 || y <0 || y >9) return;
+        if (x <0 || x >9 || y <0 || y >9) return; false
         let error = false;
 
-        if (direction === "horizontal" && x + ship.size -1 > 9) return;
-        if (direction === "vertical" && y + ship.size -1 > 9) return;
+        if (direction === "horizontal" && x + ship.size -1 > 9) return false;
+        if (direction === "vertical" && y + ship.size -1 > 9) return false;
     
 
 
@@ -56,7 +56,7 @@ export class Gameboard {
         }
 
         
-        if (error) return;
+        if (error) return false;
 
     // Placement of the ship
         for(let i = 0; i<ship.size; i++) {

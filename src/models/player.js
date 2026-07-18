@@ -119,5 +119,47 @@ export class Player {
         this.huntHits = [];
     }
 
+    randomShipPlacement() {
+        const shipsSizes = [4,3,3,2,2,2,1,1,1,1];
+        let x, y, key, direction;
+        let attempts = 0;
+        let placed = false;
+        const maxAttempts = 300; // safety
+
+
+        shipsSizes.forEach ((size) => {
+            const ship = new Ship(size);
+            direction = (Math.random() < 0.5 ) ? 'horizontal' : 'vertical';
+
+            console.log(direction);
+
+            while (!placed && attempts < maxAttempts) {
+            x = Math.floor(Math.random() * 10);
+            y = Math.floor(Math.random() * 10);
+            key = `[${x},${y}]`;
+            attempts++;
+            console.log ('attempts')
+           
+            placed = this.gameboard.placeShip(ship, [x,y], direction);
+    
+            if (!placed) {
+                console.log(`Attempt ${attempts} failed for size ${size}`);
+            }
+            }
+
+            if (placed) {
+                console.log(`✓ Ship placed: size ${size} at ${key} (${direction})`);
+                placed = false;
+                attempts = 0;
+                } else {
+                    console.error(`Failed to place ship of size ${size} after ${maxAttempts} attempts`);
+                    return false; // or handle failure
+                }
+
+        });
+
+        return true;
+    }
+
 
 }
