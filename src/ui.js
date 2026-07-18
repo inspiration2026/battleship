@@ -171,8 +171,36 @@ export const UI = (() => {
         }
     }
 
+    function initGameScreen(onStartCallback) {
+        const startBtn = document.getElementById('start-battle-btn');
+        if (startBtn) {
+            startBtn.addEventListener('click', () => {
+                console.log("Start Battle button clicked!");
+                onStartCallback();
+            });
+        }
+    }
+
+    function hideShipYard() {
+        const players = document.querySelector('.players');
+        players.style.display = 'flex';
+        const startBtn = document.getElementById('start-battle-btn');
+        startBtn.style.display = 'none';
+        const shipYard = document.querySelector('.ship-yard');
+        shipYard.style.display = 'none';
+        const request = document.querySelector('.request');
+        request.style.display = 'none';
+    }
+
     function initWinScreen() {
         const restartBtn = document.getElementById('restart-btn');
+        restartBtn.addEventListener('click', () => {
+            location.reload();
+        }); 
+    }
+
+    function initLoseScreen() {
+        const restartBtn = document.getElementById('restart-btn-lose');
         restartBtn.addEventListener('click', () => {
             location.reload();
         }); 
@@ -349,7 +377,10 @@ export const UI = (() => {
         createShipYard,
         makeShipsDraggable,
         makeBoardDroppable,
-        removeShipFromTheYard
+        removeShipFromTheYard,
+        initGameScreen, 
+        hideShipYard,
+        initLoseScreen
     };
 }
 

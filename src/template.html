@@ -14,8 +14,11 @@
     <!-- Game Screen -->
     <div id="game-screen" class="screen">
         <div class="header">
-            <div class="player-label">YOU</div>
-            <div class="player-label">ENEMY</div>
+            <div class="request">PLACE YOUR SHIPS</div>
+            <div class="players">
+                <div class="player-label">YOU</div>
+                <div class="player-label">ENEMY</div>
+            </div>
         </div>
         
         <div class="playingArea">
@@ -28,12 +31,21 @@
             <div class="playground">
             </div>
         </div>
+        <div class="footer">
+            <button id="start-battle-btn">Start The Battle</button>
+        </div>
     </div>
 
     <!-- Win Screen -->
     <div id="win-screen" class="screen">
         <h1>VICTORY!</h1>
         <button id="restart-btn">Play Again</button>
+    </div>
+
+    <!-- Lose Screen -->
+    <div id="lose-screen" class="screen">
+        <h1>GAME OVER!</h1>
+        <button id="restart-btn-lose">Play Again</button>
     </div>
 
 </body>

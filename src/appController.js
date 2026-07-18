@@ -20,37 +20,44 @@ export class Controller {
 
 startingGame() {
 
-    // this.setupShips(this.player1);
     this.setupShips(this.player2);
 
     const p1Board = this.player1.gameboard;
     const p2Board = this.player2.gameboard;
-
+    
     UI.showScreen('start-screen');
+    
     
     UI.initStartScreen(() => {
         console.log("Start button clicked - creating boards...");
-
-        UI.createBoard(1);
-        UI.createBoard(2);
-
-        UI.renderGameboard(p1Board, 1, true);
-        UI.renderGameboard(p2Board, 2, false);
-
-    
-
-        UI.addAttackListeners((coordinates) => {
-        this.makeAttack(coordinates);
-        });
-
+  
         UI.showScreen('game-screen');
 
+        UI.createBoard(1);
+
+        UI.renderGameboard(p1Board, 1, true);
         UI.createShipYard();
         UI.makeShipsDraggable();
         UI.makeBoardDroppable();
+
+        UI.initGameScreen(() => {
+            if (this.player1.gameboard.ships.length < 10) {
+                console.log ("Please place All your ships !!!");
+                return;
+            }
+            console.log("Start button clicked - initiating Battle...");
+            UI.createBoard(2);
+            UI.renderGameboard(p2Board, 2, false);
+            UI.hideShipYard();
+
+            UI.addAttackListeners((coordinates) => {
+                this.makeAttack(coordinates);
+            });
+        })
     });
 
     UI.initWinScreen();
+    UI.initLoseScreen();
 
     window.addEventListener('ship to place', (e) => {
         const data = e.detail;
@@ -61,6 +68,7 @@ startingGame() {
 
         if (placeShip) {
             console.log ('Ship placed');
+            console.log (this.player1.gameboard.ships)
             UI.removeShipFromTheYard();   
             UI.renderGameboard(p1Board, 1, true);
         } else console.log ('not placed !')
@@ -126,9 +134,15 @@ makeAttack(coordinates) {
 
         if (this.checkWin()) {
             this.isProcessingAttack = true;
+            if (this.activePlayer === 'human') {
             console.log("Game Over! Winner:", this.activePlayer.type);
             UI.showScreen('win-screen');
             return;
+            } else {
+                console.log("Game Over! Winner:", this.activePlayer.type);
+                UI.showScreen('lose-screen');
+                return;
+            }
         }
 
     } else {

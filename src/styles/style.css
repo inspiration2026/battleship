@@ -46,7 +46,7 @@ body {
     text-shadow: 0 0 30px gold;
 }
 
-#start-game-btn {
+#start-game-btn, #start-battle-btn  {
     padding: 18px 60px;
     font-size: 1.8rem;
     background: gold;
@@ -55,6 +55,11 @@ body {
     border-radius: 50px;
     cursor: pointer;
 }
+
+#start-battle-btn {
+    margin-top: 30px;
+}
+
 
 #win-screen {
     background: linear-gradient(135deg, #0f0c29, #1a054f);
@@ -74,7 +79,25 @@ body {
     to { text-shadow: 0 0 60px gold, 0 0 80px #ffd700; }
 }
 
-#restart-btn {
+#lose-screen {
+    background: linear-gradient(135deg, #0f0c29, #4f050b);
+    color: rgb(243, 49, 97);
+    text-align: center;
+}
+
+#lose-screen h1 {
+    font-size: 5rem;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 40px rgb(227, 99, 8);
+    animation: loseGlow 2s infinite alternate;
+}
+
+@keyframes loseGlow {
+    from { text-shadow: 0 0 20px rgb(238, 129, 5); }
+    to { text-shadow: 0 0 60px rgb(238, 129, 5), 0 0 80px rgb(238, 129, 5); }
+}
+
+#restart-btn, #restart-btn-lose {
     padding: 18px 60px;
     font-size: 1.6rem;
     background: linear-gradient(#ffd700, #ffaa00);
@@ -101,6 +124,10 @@ body {
     font-weight: bold;
 }
 
+.request {
+    margin-bottom: 30px;
+}
+
 .playground {
     display: flex;
     gap: 100px;
@@ -125,6 +152,12 @@ body {
     margin-bottom: 5px;
     margin-left: 20px;
     
+}
+.players {
+    display: none;
+    justify-content: center;
+    gap: 460px;
+    border: 2ps solid red;
 }
 
 .label {
@@ -242,6 +275,9 @@ body {
     padding: 15px;
     border-radius: 8px;
     border: 2px solid #ffd700;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 .ship-yard h3 {
     margin-bottom: 20px;
