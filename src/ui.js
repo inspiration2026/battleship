@@ -75,6 +75,18 @@ export const UI = (() => {
         }
     }
 
+    function clearGameboard () {
+        const cells = document.querySelectorAll('.cell');
+        cells.forEach ((cell) => {
+            cell.classList.remove('ship');
+        })
+
+        currentPreviewCells = [];
+        draggedShipData = null;
+
+        clearErrorMessage();
+    }
+
     function renderAction(gameboard, playerNumber) {
         const boardUI = document.getElementById(`playerBoard${playerNumber}`);
 
@@ -181,6 +193,18 @@ export const UI = (() => {
         }
     }
 
+    function errorMessage () {
+        const message = document.getElementById ('error-message');
+        message.textContent = ('Please place All your ships !!!');
+    }
+
+    function clearErrorMessage () {
+        const message = document.getElementById ('error-message');
+        message.textContent = ('');
+    }
+
+
+
     function hideShipYard() {
         const players = document.querySelector('.players');
         players.style.display = 'flex';
@@ -190,6 +214,12 @@ export const UI = (() => {
         shipYard.style.display = 'none';
         const request = document.querySelector('.request');
         request.style.display = 'none';
+        const message = document.getElementById ('error-message');
+        message.textContent = ('');
+        const randomBtn = document.getElementById('random-btn');
+        randomBtn.style.display = 'none';
+        const resetShipsBtn = document.getElementById('reset-ships-btn');
+        resetShipsBtn.style.display = 'none';
     }
 
     function initWinScreen() {
@@ -334,6 +364,12 @@ export const UI = (() => {
         currentPreviewCells = [];
     }
 
+    function resetShipYard() {
+        const shipYard = document.getElementById('ship-yard-container');
+        shipYard.innerHTML = '';
+        createShipYard();
+    }
+
     function showPreview(mouseX, mouseY, size, orientation, grabOffset = 0) {
         clearPreview();
 
@@ -380,7 +416,10 @@ export const UI = (() => {
         removeShipFromTheYard,
         initGameScreen, 
         hideShipYard,
-        initLoseScreen
+        initLoseScreen,
+        errorMessage,
+        resetShipYard,
+        clearGameboard
     };
 }
 

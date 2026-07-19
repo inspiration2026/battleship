@@ -201,4 +201,18 @@ export class Gameboard {
             blockedCoordinates: Array.from(blockedCoords)
         };
     }
+
+    resetGameboard() {
+        this.board = Array(10).fill().map(() => Array(10).fill(null));
+        this.ships = [];
+
+        if (this.blockedSectorsShipPlacement) {
+            this.blockedSectorsShipPlacement.clear();
+        } else {
+            this.blockedSectorsShipPlacement = new Set();
+        }
+
+        console.log('Gameboard has been reset');
+        return this;
+    }
 }

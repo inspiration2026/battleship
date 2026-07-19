@@ -317,3 +317,24 @@ body {
     background-color: rgba(0, 255, 0, 0.3) !important;
     border-color: lime;
 }
+
+.lower-btns {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+}
+
+#random-btn, #reset-ships-btn {
+    padding: 9px 30px;
+    font-size: 1rem;
+    background: rgb(212, 142, 28);
+    color: #1a054f;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+}
+
+#error-message {
+    text-align: center;
+    padding-top: 30px;
+}

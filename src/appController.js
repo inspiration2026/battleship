@@ -26,12 +26,16 @@ startingGame() {
     const p2Board = this.player2.gameboard;
     
     UI.showScreen('start-screen');
+
+    this.setupResetListener();
     
     
     UI.initStartScreen(() => {
         console.log("Start button clicked - creating boards...");
   
         UI.showScreen('game-screen');
+
+        this.resetPlayerShips();
 
         UI.createBoard(1);
 
@@ -43,6 +47,7 @@ startingGame() {
         UI.initGameScreen(() => {
             if (this.player1.gameboard.ships.length < 10) {
                 console.log ("Please place All your ships !!!");
+                UI.errorMessage ();
                 return;
             }
             console.log("Start button clicked - initiating Battle...");
@@ -58,6 +63,8 @@ startingGame() {
 
     UI.initWinScreen();
     UI.initLoseScreen();
+
+    // this.resetPositionsListener ();
 
     window.addEventListener('ship to place', (e) => {
         const data = e.detail;
@@ -168,6 +175,34 @@ makeAttack(coordinates) {
 
 checkWin() {
     return this.passivePlayer.gameboard.areAllSunk();
+}
+
+setupResetListener() {
+    const resetBtn = document.getElementById('reset-ships-btn');
+
+    if (!resetBtn) {
+        console.warn('Reset button not found in DOM');
+        return;
+    }
+
+    resetBtn.addEventListener ('click', (e) => {
+
+        console.log("Resetting player ships...");
+        
+        this.resetPlayerShips();           // the method I gave you earlier
+
+        // Refresh UI
+        UI.clearGameboard();
+        UI.renderGameboard(this.player1.gameboard, 1, true);
+        UI.resetShipYard();               // rebuild draggable ships
+        UI.makeShipsDraggable();
+        
+        console.log("Ships reset complete");
+    })
+}
+
+resetPlayerShips() {
+    this.player1.resetShips();
 }
 
 

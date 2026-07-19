@@ -161,5 +161,13 @@ export class Player {
         return true;
     }
 
+    resetShips() {
+        if (this.gameboard) {
+            this.gameboard.resetGameboard();
+        }
+        console.log(`${this.type || 'Player'} ships reset`);
+        return this;
+    }
+
 
 }
