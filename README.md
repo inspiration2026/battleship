@@ -2,7 +2,7 @@
 
 A modern, fully-featured Battleship game built with vanilla JavaScript.
 
-<image-card alt="Battleship Game Screenshot" src="./screenshot.png" ></image-card>
+![Battleship Game Screenshot](screenshot.png)
 
 ## 🎮 Features
 
@@ -75,10 +75,20 @@ battleship/
 ### Prerequisites
 - Node.js and npm
 
-### Running Locally
+### Installation & Running
 
-npm run build      # Build with webpack
-npm start          # Open in browser (if using webpack-dev-server)
+# Clone the repo
+git clone <https://github.com/inspiration2026/battleship>
+cd battleship
+
+# Install dependencies
+npm install
+
+# Build the project
+npm run build
+
+# Open the game
+open dist/index.html
 
 ## 🧪 Testing
 npm test           # Run Jest tests
