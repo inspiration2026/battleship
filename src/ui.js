@@ -364,10 +364,9 @@ export const UI = (() => {
         currentPreviewCells = [];
     }
 
-    function resetShipYard() {
+    function clearShipYard() {
         const shipYard = document.getElementById('ship-yard-container');
         shipYard.innerHTML = '';
-        createShipYard();
     }
 
     function showPreview(mouseX, mouseY, size, orientation, grabOffset = 0) {
@@ -418,7 +417,7 @@ export const UI = (() => {
         hideShipYard,
         initLoseScreen,
         errorMessage,
-        resetShipYard,
+        clearShipYard,
         clearGameboard
     };
 }

@@ -28,14 +28,13 @@ startingGame() {
     UI.showScreen('start-screen');
 
     this.setupResetListener();
+    this.setupRandomListener();
     
     
     UI.initStartScreen(() => {
         console.log("Start button clicked - creating boards...");
   
         UI.showScreen('game-screen');
-
-        this.resetPlayerShips();
 
         UI.createBoard(1);
 
@@ -186,23 +185,53 @@ setupResetListener() {
     }
 
     resetBtn.addEventListener ('click', (e) => {
-
-        console.log("Resetting player ships...");
-        
-        this.resetPlayerShips();           // the method I gave you earlier
-
-        // Refresh UI
-        UI.clearGameboard();
-        UI.renderGameboard(this.player1.gameboard, 1, true);
-        UI.resetShipYard();               // rebuild draggable ships
-        UI.makeShipsDraggable();
-        
-        console.log("Ships reset complete");
+        this.resetPlayerShips();
     })
 }
 
 resetPlayerShips() {
+    
+
+    console.log("Resetting player ships...");
+
     this.player1.resetShips();
+
+    // Refresh UI
+    UI.clearGameboard();
+    UI.renderGameboard(this.player1.gameboard, 1, true);
+    UI.clearShipYard(); 
+    UI.createShipYard();
+    UI.makeShipsDraggable();
+    
+    console.log("Ships reset complete");
+}
+
+setupRandomListener() {
+    console.log('initiated!')
+    const randomBtn = document.getElementById('random-btn');
+
+    if (!randomBtn) {
+        console.warn('Random button not found in DOM');
+        return;
+    }
+
+    randomBtn.addEventListener ('click', () => {
+        if (this.player1.gameboard.ships.length === 0) {
+            console.log('if');
+            this.player1.randomShipPlacement();
+            UI.renderGameboard(this.player1.gameboard, 1, true);
+            UI.clearShipYard(); 
+
+        } else {
+            this.player1.resetShips();
+            UI.clearGameboard();
+            UI.clearShipYard(); 
+
+            this.player1.randomShipPlacement();
+            UI.renderGameboard(this.player1.gameboard, 1, true);
+            console.log ("else");
+        }
+    })
 }
 
 
