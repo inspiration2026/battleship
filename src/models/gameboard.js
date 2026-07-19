@@ -182,7 +182,6 @@ export class Gameboard {
                 const by = sy + dy;
                 if (bx >= 0 && bx < 10 && by >= 0 && by < 10) {
                     blockedCoords.add(`${bx},${by}`);
-                    // console.log(blockedCoords);
                 }
             }
         }
@@ -211,8 +210,6 @@ export class Gameboard {
         } else {
             this.blockedSectorsShipPlacement = new Set();
         }
-
-        console.log('Gameboard has been reset');
         return this;
     }
 }

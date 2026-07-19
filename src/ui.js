@@ -3,15 +3,7 @@ export const UI = (() => {
     let currentPreviewCells = [];
     let draggedShipData = null;
 
-
-    function createPlayground() {
-        const playground = document.createElement('div');
-        playground.classList.add('playground');
-        document.body.appendChild(playground);
-    }
-
     function createBoard(playerNumber) {
-        console.log(`Creating board for player ${playerNumber}`);
         const wrapper = document.createElement('div');
         wrapper.classList.add('board-wrapper');
 
@@ -173,11 +165,9 @@ export const UI = (() => {
     }
 
     function initStartScreen(onStartCallback) {
-        console.log("initStartScreen called - count:", ++window.initCount || (window.initCount = 1));
         const startBtn = document.getElementById('start-game-btn');
         if (startBtn) {
             startBtn.addEventListener('click', () => {
-                console.log("Start button clicked!");
                 onStartCallback();
             });
         }
@@ -187,7 +177,6 @@ export const UI = (() => {
         const startBtn = document.getElementById('start-battle-btn');
         if (startBtn) {
             startBtn.addEventListener('click', () => {
-                console.log("Start Battle button clicked!");
                 onStartCallback();
             });
         }
@@ -202,8 +191,6 @@ export const UI = (() => {
         const message = document.getElementById ('error-message');
         message.textContent = ('');
     }
-
-
 
     function hideShipYard() {
         const players = document.querySelector('.players');
@@ -349,10 +336,7 @@ export const UI = (() => {
                     orientation: direction     
                 }
                 const event = new CustomEvent ('ship to place', {detail: dataToSend});
-                window.dispatchEvent(event);
-
-                console.log(`Drop ship size ${size} at head [${headX},${headY}] orientation: ${direction}`);
-                
+                window.dispatchEvent(event);      
             }); 
         });
     }   
@@ -371,9 +355,6 @@ export const UI = (() => {
 
     function showPreview(mouseX, mouseY, size, orientation, grabOffset = 0) {
         clearPreview();
-
-        console.log(mouseX, mouseY, size, orientation, grabOffset);
-
 
         for (let i = 0; i < size; i++) {
             let nx = mouseX;
@@ -399,7 +380,6 @@ export const UI = (() => {
 
 
     return {
-        createPlayground,
         createBoard,
         renderGameboard,
         renderAction,

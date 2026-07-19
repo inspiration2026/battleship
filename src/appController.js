@@ -32,12 +32,8 @@ startingGame() {
     
     
     UI.initStartScreen(() => {
-        console.log("Start button clicked - creating boards...");
-  
         UI.showScreen('game-screen');
-
         UI.createBoard(1);
-
         UI.renderGameboard(p1Board, 1, true);
         UI.createShipYard();
         UI.makeShipsDraggable();
@@ -45,11 +41,9 @@ startingGame() {
 
         UI.initGameScreen(() => {
             if (this.player1.gameboard.ships.length < 10) {
-                console.log ("Please place All your ships !!!");
                 UI.errorMessage ();
                 return;
             }
-            console.log("Start button clicked - initiating Battle...");
             UI.createBoard(2);
             UI.renderGameboard(p2Board, 2, false);
             UI.hideShipYard();
@@ -63,48 +57,16 @@ startingGame() {
     UI.initWinScreen();
     UI.initLoseScreen();
 
-    // this.resetPositionsListener ();
-
     window.addEventListener('ship to place', (e) => {
         const data = e.detail;
-        console.log("Data received:", data.head, data.size, data.orientation);
-
         const ship = new Ship (data.size);
         const placeShip = this.player1.gameboard.placeShip (ship, data.head, data.orientation);
 
         if (placeShip) {
-            console.log ('Ship placed');
-            console.log (this.player1.gameboard.ships)
             UI.removeShipFromTheYard();   
             UI.renderGameboard(p1Board, 1, true);
-        } else console.log ('not placed !')
-
+        }
     });
-
-}
-
-
-
-setupShips(player) {
-    
-
-    const configs = [
-            {size: 4, head: [5,0], dir: 'horizontal'},
-            {size: 3, head: [0,2], dir: 'vertical'},
-            {size: 3, head: [7,3], dir: 'horizontal'},
-            {size: 2, head: [0,0], dir: 'horizontal'},
-            {size: 2, head: [4,5], dir: 'vertical'},
-            {size: 2, head: [3,8], dir: 'vertical'},
-            {size: 1, head: [9,6], dir: 'horizontal'},
-            {size: 1, head: [6,7], dir: 'horizontal'},
-            {size: 1, head: [9,9], dir: 'horizontal'},
-            {size: 1, head: [7,9], dir: 'horizontal'},
-        ];
-
-        configs.forEach(cfg => {
-            const ship = new Ship(cfg.size);
-            player.gameboard.placeShip(ship, cfg.head, cfg.dir);
-        });
 }
 
 switchPlayer() {
@@ -112,12 +74,10 @@ switchPlayer() {
 }
 
 makeAttack(coordinates) {
-    console.log(`blocked sectors`, this.activePlayer.type, this.passivePlayer.gameboard.attackedBlocked);
     if (this.isProcessingAttack) return;
     this.isProcessingAttack = true;
 
     const result = this.passivePlayer.gameboard.receiveAttack(coordinates);
-
     const playerNum = this.passivePlayer === this.player2 ? 2 : 1;
     UI.renderAction(this.passivePlayer.gameboard, playerNum);
 
@@ -143,11 +103,9 @@ makeAttack(coordinates) {
         if (this.checkWin()) {
             this.isProcessingAttack = true;
             if (this.activePlayer.type === 'human') {
-            console.log("Congratulations! Winner:", this.activePlayer.type);
             UI.showScreen('win-screen');
             return;
             } else {
-                console.log("Game Over! Winner:", this.activePlayer.type);
                 UI.showScreen('lose-screen');
                 return;
             }
@@ -155,7 +113,7 @@ makeAttack(coordinates) {
 
     } else {
         this.switchPlayer();
-    }
+        }
 
     if (this.activePlayer.type === 'computer') {
         setTimeout(() => {
@@ -166,10 +124,10 @@ makeAttack(coordinates) {
             }
             this.isProcessingAttack = false;
             this.makeAttack(coords);
-        }, 1000);
+        }, 800);
     } else {
         this.isProcessingAttack = false;
-    }
+        }
 }
 
 checkWin() {
@@ -190,10 +148,6 @@ setupResetListener() {
 }
 
 resetPlayerShips() {
-    
-
-    console.log("Resetting player ships...");
-
     this.player1.resetShips();
 
     // Refresh UI
@@ -202,12 +156,9 @@ resetPlayerShips() {
     UI.clearShipYard(); 
     UI.createShipYard();
     UI.makeShipsDraggable();
-    
-    console.log("Ships reset complete");
 }
 
 setupRandomListener() {
-    console.log('initiated!')
     const randomBtn = document.getElementById('random-btn');
 
     if (!randomBtn) {
@@ -217,11 +168,9 @@ setupRandomListener() {
 
     randomBtn.addEventListener ('click', () => {
         if (this.player1.gameboard.ships.length === 0) {
-            console.log('if');
             this.player1.randomShipPlacement();
             UI.renderGameboard(this.player1.gameboard, 1, true);
             UI.clearShipYard(); 
-
         } else {
             this.player1.resetShips();
             UI.clearGameboard();
@@ -229,7 +178,6 @@ setupRandomListener() {
 
             this.player1.randomShipPlacement();
             UI.renderGameboard(this.player1.gameboard, 1, true);
-            console.log ("else");
         }
     })
 }

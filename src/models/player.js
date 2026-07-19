@@ -10,8 +10,7 @@ export class Player {
     }
 
     makeBestAttack(gameboard) {
-    console.log("makeBestAttack called, huntMode:", this.huntMode, "hits count:", this.huntHits.length); // debug
-
+        
     if (this.huntMode && this.huntHits.length > 0) {
         return this.makeSmartAttack(gameboard);
     } else {
@@ -110,7 +109,6 @@ export class Player {
     registerHit(x, y) {
         this.huntHits.push({ x, y });
         this.huntMode = true;
-        console.log ("hunt hits" , this.huntHits)
     }
 
     // Call this when ship is sunk
@@ -131,29 +129,20 @@ export class Player {
             const ship = new Ship(size);
             direction = (Math.random() < 0.5 ) ? 'horizontal' : 'vertical';
 
-            console.log(direction);
-
             while (!placed && attempts < maxAttempts) {
-            x = Math.floor(Math.random() * 10);
-            y = Math.floor(Math.random() * 10);
-            key = `[${x},${y}]`;
-            attempts++;
-            console.log ('attempts')
-           
-            placed = this.gameboard.placeShip(ship, [x,y], direction);
-    
-            if (!placed) {
-                console.log(`Attempt ${attempts} failed for size ${size}`);
-            }
+                x = Math.floor(Math.random() * 10);
+                y = Math.floor(Math.random() * 10);
+                key = `[${x},${y}]`;
+                attempts++;
+            
+                placed = this.gameboard.placeShip(ship, [x,y], direction);
             }
 
             if (placed) {
-                console.log(`✓ Ship placed: size ${size} at ${key} (${direction})`);
                 placed = false;
                 attempts = 0;
                 } else {
-                    console.error(`Failed to place ship of size ${size} after ${maxAttempts} attempts`);
-                    return false; // or handle failure
+                    return false;
                 }
 
         });
@@ -165,7 +154,6 @@ export class Player {
         if (this.gameboard) {
             this.gameboard.resetGameboard();
         }
-        console.log(`${this.type || 'Player'} ships reset`);
         return this;
     }
 

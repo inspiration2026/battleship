@@ -6,11 +6,15 @@
 }
 
 :root {
-    --primary-color: #220866;
+    --primary-color: rgb(8, 21, 101);
     --hit-color: #e50810;
-    --miss-color: #0d73e7;
+    --miss-color: rgb(23, 122, 236);
     --sunk-color: #000;
     --blocked-color: rgba(128, 128, 128, 0.45);
+    --btn-background-color: rgb(255, 215, 0);
+    --sunk-border:rgb(255, 215, 0);
+    --looser-color: rgb(243, 49, 97);
+    --text-btn-color: #1a054f;
 }
 
 body {
@@ -43,14 +47,14 @@ body {
 #start-screen h1 {
     font-size: 5rem;
     margin-bottom: 2rem;
-    text-shadow: 0 0 30px gold;
+    text-shadow: 0 0 30px var(--btn-background-color);
 }
 
 #start-game-btn, #start-battle-btn  {
     padding: 18px 60px;
     font-size: 1.8rem;
-    background: gold;
-    color: #1a054f;
+    background: var(--btn-background-color);
+    color: var(--text-btn-color);
     border: none;
     border-radius: 50px;
     cursor: pointer;
@@ -63,25 +67,25 @@ body {
 
 #win-screen {
     background: linear-gradient(135deg, #0f0c29, #1a054f);
-    color: gold;
+    color: var(--btn-background-color);
     text-align: center;
 }
 
 #win-screen h1 {
     font-size: 5rem;
     margin-bottom: 2rem;
-    text-shadow: 0 0 40px gold;
+    text-shadow: 0 0 40px var(--btn-background-color);
     animation: victoryGlow 2s infinite alternate;
 }
 
 @keyframes victoryGlow {
-    from { text-shadow: 0 0 20px gold; }
-    to { text-shadow: 0 0 60px gold, 0 0 80px #ffd700; }
+    from { text-shadow: 0 0 20px var(--btn-background-color) }
+    to { text-shadow: 0 0 60px var(--btn-background-color), 0 0 80px #ffd700; }
 }
 
 #lose-screen {
     background: linear-gradient(135deg, #0f0c29, #4f050b);
-    color: rgb(243, 49, 97);
+    color: var(--looser-color);
     text-align: center;
 }
 
@@ -157,7 +161,6 @@ body {
     display: none;
     justify-content: center;
     gap: 460px;
-    border: 2ps solid red;
 }
 
 .label {
@@ -179,7 +182,7 @@ body {
 .board {
     display: grid;
     grid-template-columns: repeat(10, 1fr);
-    border: 4px solid #ffd700;
+    border: 4px solid var(--sunk-border);
     width: 420px;
     height: 420px;
     background-color: #0a0a1f;
@@ -223,7 +226,7 @@ body {
 /* Miss Animation */
 .cell.miss {
     animation: missSplash 0.6s ease;
-    background-color: #0d73e7 !important;
+    background-color: var(--miss-color) !important;
     color: white;
 }
 
@@ -235,7 +238,7 @@ body {
 /* Sunk */
 .cell.sunk {
     background-color: var(--sunk-color) !important;
-    border-color: gold;
+    border-color: var(--sunk-border);
     animation: sunkAnimation 0.8s ease forwards;
 }
 
@@ -274,7 +277,7 @@ body {
     background: rgba(0,0,0,0.3);
     padding: 15px;
     border-radius: 8px;
-    border: 2px solid #ffd700;
+    border: 2px solid var(--sunk-border);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -328,7 +331,7 @@ body {
     padding: 9px 30px;
     font-size: 1rem;
     background: rgb(212, 142, 28);
-    color: #1a054f;
+    color: var(--text-btn-color);
     border: none;
     border-radius: 50px;
     cursor: pointer;
@@ -337,4 +340,5 @@ body {
 #error-message {
     text-align: center;
     padding-top: 30px;
+    color: red;
 }
