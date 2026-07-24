@@ -15,6 +15,8 @@
     --sunk-border:rgb(255, 215, 0);
     --looser-color: rgb(243, 49, 97);
     --text-btn-color: #1a054f;
+    --mobile-landscape-board-size: min(45vw, 80vh);
+    --mobile-portrait-board-size: min(80vw, 45vh);
 }
 
 body {
@@ -341,4 +343,212 @@ body {
     text-align: center;
     padding-top: 30px;
     color: red;
+    display: none;
+}
+
+@media (orientation: portrait) and (max-width: 600px) {
+    .playground {
+        flex-direction: column;
+        gap: 4vh;
+        padding: 0px;
+    }
+
+    .board-sidebar {
+        display: none;
+    }
+
+    .board-header {
+        display: none;
+    }
+
+    .board-wrapper {
+        margin: 0px;
+    }
+
+    .board {
+        width: var(--mobile-portrait-board-size);         
+        height: var(--mobile-portrait-board-size);
+    }
+
+    .header {
+        gap: 20px;
+        margin: 0px;
+    }
+
+    .players {
+        display: none;
+    }
+
+    .player-label {
+        display: none;
+    }
+
+    .playground-wrap {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .ship-yard {
+        display: none;
+    }
+
+    .under-gameboard {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding-left: 4vh;
+        padding-right: 4vh;
+    }
+
+    .lower-btns {
+        flex-direction: column;
+        margin-top: 4vh;
+        gap: 4vh;
+        align-self: center;
+    }
+
+    #random-btn, #reset-ships-btn {
+        padding: 1vh 2vh;
+        border-radius: 10px;
+        align-self: center;
+    }
+
+    #error-message {
+        font-size: small;
+        text-align: center;
+    }
+
+    #start-game-btn, #start-battle-btn, #restart-btn, #restart-btn-lose  {
+        padding: 1vh 2vh;
+        font-size: 1.2rem;
+        border-radius: 10px;
+    }
+
+    #start-battle-btn {
+        margin: 1vh 2vh;;
+    }
+
+    .request {
+        margin: 1vh 2vh;
+        text-align: center;
+        font-size: medium;
+    }
+
+    .screen {
+        gap: 4vh;
+    }
+
+    #start-screen h1, #lose-screen h1, #win-screen h1 {
+        font-size: 3rem;
+        margin-bottom: 2rem;
+    }
+}
+
+/* Landscape (phone rotated) */
+@media (orientation: landscape) and (max-height: 600px) {
+
+
+    .playground {
+        flex-direction: row;
+        gap: 4vw;
+        padding: 0px;
+    }
+
+    .board-sidebar {
+        display: none;
+    }
+
+    .board-header {
+        display: none;
+    }
+
+    .board-wrapper {
+        margin: 0px;
+    }
+
+    .board {
+        width: var(--mobile-landscape-board-size);         
+        height: var(--mobile-landscape-board-size);
+    }
+
+    .header {
+        gap: 20px;
+        margin: 0px;
+    }
+
+    .players {
+        display: none;
+    }
+
+    .player-label {
+        display: none;
+    }
+
+    .playground-wrap {
+        display: flex;
+    }
+
+    .ship-yard {
+        display: none;
+    }
+
+    .under-gameboard {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding-left: 4vw;
+        padding-right: 4vw;
+    }
+
+    .lower-btns {
+        flex-direction: column;
+        margin-top: 4vw;
+        gap: 4vw;
+        align-self: center;
+    }
+
+    #random-btn, #reset-ships-btn {
+        padding: 1vw 2vw;
+        border-radius: 10px;
+        /* width: 20vw; */
+        align-self: center;
+    }
+
+    #error-message {
+        font-size: small;
+        text-align: center;
+        margin-bottom: 10vw;
+    }
+
+    #start-game-btn, #start-battle-btn, #restart-btn, #restart-btn-lose  {
+        padding: 1vw 2vw;
+        font-size: 1.2rem;
+        border-radius: 10px;
+    }
+
+    #start-battle-btn {
+        margin: 1vw 2vw;;
+    }
+
+    .request {
+        margin: 1vw 2vw;
+        text-align: center;
+        font-size: medium;
+    }
+
+    .screen {
+        flex-direction: row;
+        gap: 0px;
+    }
+
+    #win-screen, #lose-screen, #start-screen {
+        flex-direction: column;
+    }
+
+    #start-screen h1, #lose-screen h1, #win-screen h1 {
+        font-size: 3rem;
+        margin-bottom: 2rem;
+    }
 }

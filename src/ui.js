@@ -185,11 +185,12 @@ export const UI = (() => {
     function errorMessage () {
         const message = document.getElementById ('error-message');
         message.textContent = ('Please place All your ships !!!');
+        message.style.display = 'block';
     }
 
     function clearErrorMessage () {
         const message = document.getElementById ('error-message');
-        message.textContent = ('');
+        message.style.display = 'none';
     }
 
     function hideShipYard() {
@@ -202,11 +203,13 @@ export const UI = (() => {
         const request = document.querySelector('.request');
         request.style.display = 'none';
         const message = document.getElementById ('error-message');
-        message.textContent = ('');
+        message.style.display = 'none';
         const randomBtn = document.getElementById('random-btn');
         randomBtn.style.display = 'none';
         const resetShipsBtn = document.getElementById('reset-ships-btn');
         resetShipsBtn.style.display = 'none';
+        const underGameboard = document.querySelector('.under-gameboard')
+        underGameboard.style.display = 'none';
     }
 
     function initWinScreen() {
